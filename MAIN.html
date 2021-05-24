@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radica sorting test</title>
+    <!-- styles for some good visual experience -->
+    <style>
+        body{
+            font-family: sans-serif;
+        }
+        table, td {
+            margin: 0;
+            padding: 0;
+            border: 1px solid black;
+        }
+        td{
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h3>Sorting text</h3>
+
+    <!-- form to get inputs from user -->
+    <form class="myForm">
+        <label for="userId">UserID</label> <br/>
+        <input type="number" id="userId" disabled>
+        <input type="text" id="userName" placeholder="Username..." value="" required>
+        <input type="text" id="userOccupation" placeholder="User Occupation" value="" required>
+        <button type="submit">Add</button>
+
+        <br /><br />
+        <!-- drop down to select a sorting option -->
+        Sort By: <select id="sortOptions">
+            <option value="userid">UserID</option>
+            <option value="username">UserName</option>
+            <option value="useroccupation">UserOccupation</option>
+        </select>
+
+        <br /><br />
+        <!-- arena at which the table is going to be printed -->
+        <div class="tableArena"></div>
+    </form>
+
+    <script>
+        // declaring all the things that we are going to use further
+        const myForm = document.querySelector('.myForm')
+        const userName = document.querySelector('#userName')
+        const userOccupation = document.querySelector('#userOccupation')
+        const sortOptions = document.querySelector('#sortOptions')
+
+        const tableArena = document.querySelector('.tableArena')
+        const id = document.querySelector('#userId')
+        // initializing an empty array to store user objects later
+        let userArray = []
+        // starting userID from 1
+        let userId = 1
+        // changing userId according to the current value
+        id.value = userId
+
+        // submit listener for the inputs entered by the user
+        myForm.addEventListener('submit', (e) => {
+            // preventing the page to load
+            e.preventDefault()
+            // pushing the userid, username and useroccupation values in to the userArray that we have created
+            userArray.push({
+                userId, userName: userName.value, userOccupation:  userOccupation.value
+            })
+            // incrementing userID after successfully pushing the object into the array
+            userId += 1
+            // creating table based on the userArray
+            formTable(userArray)
+        })
+
+        // creating table based on the userArray
+        const formTable = (userArray) => {
+            let innerTableContent = ""
+            // content inside <table> </table> tags
+            userArray.forEach((eachUser) => {
+                innerTableContent += `
+                <tr>
+                    <td>${eachUser.userId}</td>
+                    <td>${eachUser.userName}</td>
+                    <td>${eachUser.userOccupation}</td>
+                </tr>`
+            })
+
+            // appending the above content in between <table> </table> tags
+            tableArena.innerHTML = `
+            <table>
+                ${innerTableContent}
+            </table>
+            `
+        }
+
+        // function to compare usernames
+        function compareUserName(a, b) {
+            if (a.userName < b.userName) {
+                return -1;
+            }
+            if (a.userName > b.userName) {
+                return 1;
+            }
+            return 0;
+        }
+
+        // function to compare userid
+        function compareUserId(a, b) {
+            if (a.userId < b.userId) {
+                return -1;
+            }
+            if (a.userId > b.userId) {
+                return 1;
+            }
+            return 0;
+        }
+
+        // function to compare user occupation
+        function compareUserOccupation(a, b) {
+            if (a.userOccupation < b.userOccupation) {
+                return -1;
+            }
+            if (a.userOccupation > b.userOccupation) {
+                return 1;
+            }
+            return 0;
+        }
+
+        // when a user selects one option from the dropdown, below code triggers
+        sortOptions.addEventListener('change', (e) => {
+            if (e.target.value == 'username'){
+                // if he selected to sort by username, we call compareUserName to sort the array
+                userArray.sort(compareUserName)
+                // and finally creating the table based on the sorted array
+                formTable(userArray)
+            }
+            else if (e.target.value == 'useroccupation') {
+                // if he selected to sort by useroccupation, we call compareUserOccupation to sort the array
+                userArray.sort(compareUserOccupation)
+                // and finally creating the table based on the sorted array
+                formTable(userArray)
+            }
+            else{
+                // if he selected to sort by userid, we call compareUserId to sort the array
+                userArray.sort(compareUserId)
+                // and finally creating the table based on the sorted array
+                formTable(userId)
+            }
+        })
+    </script>
+</body>
+</html>
